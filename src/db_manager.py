@@ -11,15 +11,13 @@ class DBManager:
     - Получение вакансий с ЗП выше средней
     - Получение вакансий, содержащих ключевое слово
     """
-
-    def __init__(self, database_name: str = "headhunter", **params: dict) -> None:
-        """Инициализирует объект DBManager с параметрами для подключения к базе данных."""
-        super().__init__()
-        self.database_name = database_name
+    def __init__(self, **params: dict[str, Any]) -> None:
+        """Инициализирует объект DBManager с параметрами для подключения к базе данных"""
+        self.db_name = params.get("db_name")
         self.params = params
 
     def connect(self) -> Any:
-        """Устанавливает соединение с базой данных."""
+        """Устанавливает соединение с базой данных"""
         # Проверяем, что все необходимые параметры присутствуют
         required_params = ["host", "user", "password", "port"]
         for param in required_params:
@@ -27,7 +25,7 @@ class DBManager:
                 raise ValueError(f"Отсутствует обязательный параметр: {param}")
         try:
             conn = psycopg2.connect(
-                dbname=self.database_name,
+                dbname=self.db_name,
                 user=self.params.get("user"),
                 password=self.params.get("password"),
                 host=self.params.get("host", "localhost"),  # Значение по умолчанию
@@ -35,7 +33,7 @@ class DBManager:
             )
             return conn
         except psycopg2.Error as e:
-            print(f"Ошибка при подключении к базе данных {self.database_name}: {e}")
+            print(f"Ошибка при подключении к базе данных {self.db_name}: {e}")
 
     def get_companies_and_vacancies_count(self) -> Any:
         """Получает список всех компаний и количества вакансий у каждой компании"""
