@@ -25,8 +25,6 @@ def config(filename: str = "src/database.ini", section: str = "postgresql") -> d
     # read config file
     parser.read(filename)
     # Проверка чтения файла с конфигурацией
-    # print(filename)
-    # print(parser.sections())
     db = {}
     if parser.has_section(section):
         params = parser.items(section)

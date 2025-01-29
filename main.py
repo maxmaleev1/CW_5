@@ -5,7 +5,6 @@ from src.db_create import DBCreate
 
 
 def main() -> None:
-    config()
     hh = HeadHunterAPI()
     params = config()
     db = DBCreate(**params)

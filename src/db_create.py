@@ -4,9 +4,9 @@ import psycopg2
 
 class DBCreate:
     """Создает базу данных, подключение к ней, и таблицы"""
-
-    def __init__(self, database_name: str = "headhunter", **params: dict[str, Any]):
-        self.database_name = database_name
+    def __init__(self, **params: dict[str, Any]) -> None:
+        """Инициализирует подключение к базе данных"""
+        self.db_name = params.get("db_name")
         self.params = params
         try:
             self.conn = psycopg2.connect(
@@ -28,9 +28,8 @@ class DBCreate:
         """Создает базу данных"""
         try:
             with self.conn.cursor() as cur:
-                cur.execute(f"DROP DATABASE IF EXISTS {self.database_name}")
-                cur.execute(f"CREATE DATABASE {self.database_name}")
-                # logger.info(f"База данных {self.database_name} успешно создана.")
+                cur.execute(f"DROP DATABASE IF EXISTS {self.db_name}")
+                cur.execute(f"CREATE DATABASE {self.db_name}")
 
         except psycopg2.Error as e:
             print(f"Ошибка при создании базы данных: {e}")
@@ -43,7 +42,7 @@ class DBCreate:
         """Создает таблицы в базе данных"""
         try:
             self.conn = psycopg2.connect(
-                dbname=self.database_name,
+                dbname=self.db_name,
                 user=self.params.get("user"),
                 password=self.params.get("password"),
                 host=self.params.get("host", "localhost"),  # Значение по умолчанию
@@ -88,7 +87,7 @@ class DBCreate:
         """Заполняет данные в таблицы базы данных"""
         try:
             self.conn = psycopg2.connect(
-                dbname=self.database_name,
+                dbname=self.db_name,
                 user=self.params.get("user"),
                 password=self.params.get("password"),
                 host=self.params.get("host", "localhost"),  # Значение по умолчанию
@@ -125,7 +124,6 @@ class DBCreate:
                         salary_from = vacancy.get("salary", {}).get("from")
                         salary_to = vacancy.get("salary", {}).get("to")
                         salary = salary_from if salary_from is not None else salary_to
-
                         address = vacancy.get("address")
                         city = address.get("city") if address else None
 
